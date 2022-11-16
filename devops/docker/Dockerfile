@@ -51,7 +51,7 @@ EXPOSE 80/tcp
 VOLUME ["/opt/"]
 
 COPY devops/boot /boot
-RUN chmod +x /boot/start.sh
+RUN chmod +x /boot/*
 ENTRYPOINT ["dumb-init", "/boot/start.sh"]
 CMD [""]
 ##
