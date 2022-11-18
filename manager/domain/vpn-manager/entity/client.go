@@ -1,8 +1,8 @@
 package entity
 
 type Client struct {
-	ID       string
-	FileName string
-	FilePath string
-	IsActive bool
+	ID             string
+	ConfigFileName string
+	ConfigPath     string
+	IsActive       bool
 }

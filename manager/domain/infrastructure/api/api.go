@@ -14,12 +14,14 @@ func InitHttp() error {
 		return c.String(200, "PONG")
 	})
 
-	privateApi := api.Group("/api/:service", authMiddleware)
-
-	privateApi.POST("/client/:id/new", vpn_manager.CreateClient)
-	privateApi.PUT("/client/:id/renew", vpn_manager.RenewClient)
-	privateApi.DELETE("/client/:id", vpn_manager.DropClient)
+	privateApi := api.Group("/api", authMiddleware)
 	privateApi.GET("/status", vpn_manager.CheckStatus)
+
+	serviceApi := privateApi.Group("/:service")
+
+	serviceApi.POST("/client/:id/new", vpn_manager.CreateClient)
+	serviceApi.PUT("/client/:id/renew", vpn_manager.RenewClient)
+	serviceApi.DELETE("/client/:id", vpn_manager.DropClient)
 
 	return api.Start(config.Envs.HttpAddress)
 }

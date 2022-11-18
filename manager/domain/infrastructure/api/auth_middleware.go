@@ -2,8 +2,6 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	"vpn-manager/domain/infrastructure/auth"
-	apiError "vpn-manager/domain/infrastructure/error"
 )
 
 func authMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -13,9 +11,9 @@ func authMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			token = c.QueryParam("token")
 		}
 
-		if !auth.CheckApiToken(token) {
-			return apiError.NewAccessDeniedError("Incorrect token")
-		}
+		//if !auth.CheckApiToken(token) {
+		//	return apiError.NewAccessDeniedError("Incorrect token")
+		//}
 
 		return next(c)
 	}

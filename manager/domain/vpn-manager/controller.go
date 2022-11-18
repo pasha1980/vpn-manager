@@ -69,6 +69,7 @@ func RenewClient(c echo.Context) error {
 func CheckStatus(c echo.Context) error {
 
 	var statusDTO dto.ServiceStatus
+	statusDTO.Service = make(map[string]bool)
 
 	for name, manager := range managers {
 		statusDTO.Service[name] = manager.HealthCheck()

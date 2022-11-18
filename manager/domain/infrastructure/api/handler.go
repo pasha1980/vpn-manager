@@ -1,10 +1,8 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"net/http"
 	apiError "vpn-manager/domain/infrastructure/error"
 )
@@ -34,7 +32,7 @@ func NewErrorHandler() func(err error, ctx echo.Context) {
 		default:
 			statusCode = http.StatusInternalServerError
 			errorType = "INTERNAL_ERROR"
-			message = "Internal server error"
+			message = err.Error()
 		}
 
 		response := map[string]interface{}{
@@ -42,15 +40,7 @@ func NewErrorHandler() func(err error, ctx echo.Context) {
 			"message": message,
 			"data":    data,
 		}
-		jsonData, _ := json.Marshal(response)
 
-		if statusCode < 500 {
-			log.Debug(string(jsonData))
-		} else {
-			log.Error(string(jsonData))
-		}
-
-		c.JSON(statusCode, jsonData)
-
+		c.JSON(statusCode, response)
 	}
 }
