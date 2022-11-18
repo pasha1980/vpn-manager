@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/labstack/gommon/log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,9 +17,12 @@ import (
 func main() {
 	config.InitConfig()
 
-	go upHook()
+	err := api.InitHttp()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	api.InitHttp()
+	go upHook()
 
 	downSignal := make(chan os.Signal)
 	signal.Notify(
