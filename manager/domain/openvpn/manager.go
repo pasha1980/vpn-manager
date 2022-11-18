@@ -48,14 +48,14 @@ func (s *Service) GetClient(id string) (*entity.Client, error) {
 	}
 
 	for _, element := range dirData {
-		if element.IsDir() {
+		if !element.IsDir() {
 			continue
 		}
 
-		if element.Name() == id+".ovpn" {
+		if element.Name() == id {
 			client := entity.Client{
 				ID:             id,
-				ConfigPath:     config.Envs.OpenvpnDataDir + "/clients/" + element.Name(),
+				ConfigPath:     config.Envs.OpenvpnDataDir + "/clients/" + element.Name() + "/client.ovpn",
 				ConfigFileName: element.Name(),
 				IsActive:       true,
 			}
@@ -69,14 +69,14 @@ func (s *Service) GetClient(id string) (*entity.Client, error) {
 	}
 
 	for _, element := range dirData {
-		if element.IsDir() {
+		if !element.IsDir() {
 			continue
 		}
 
 		if element.Name() == id+".ovpn" {
 			client := entity.Client{
 				ID:             id,
-				ConfigPath:     config.Envs.OpenvpnDataDir + "/removed/" + element.Name(),
+				ConfigPath:     config.Envs.OpenvpnDataDir + "/removed/" + element.Name() + "/client.ovpn",
 				ConfigFileName: element.Name(),
 				IsActive:       false,
 			}
