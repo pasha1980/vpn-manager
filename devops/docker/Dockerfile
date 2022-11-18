@@ -18,6 +18,9 @@ RUN go build -o ./app main.go \
 
 # VPN
 FROM alpine:3.14.1 as main
+
+ARG HOST_URL="localhost:8080"
+
 RUN apk add --no-cache sudo bash dumb-init curl
 ENV NET_ADAPTER eth0
 ENV HOST_ADDR localhost
@@ -29,6 +32,7 @@ RUN mkdir /manager
 COPY --from=manager_builder /app/app /manager
 
 ENV HTTP_ADDRESS "0.0.0.0:80"
+ENV OPERATOR_URL "https://operator.tgvpn.dev2.feraru.org/manager/hook"
 EXPOSE 80
 ##
 
