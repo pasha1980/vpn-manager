@@ -28,6 +28,7 @@ ENV HOST_CONF_PORT 80
 ENV OPENVPN_APP_NAME openvpn
 ENV OPENVPN_INSTALL_PATH /opt/${OPENVPN_APP_NAME}
 ENV OPENVPN_PERSIST_DIR /opt/${OPENVPN_APP_NAME}_data
+ENV OPENVPN_SCRIPT_DIR /scripts/${OPENVPN_APP_NAME}
 
 COPY devops/config/openvpn ${OPENVPN_INSTALL_PATH}/config
 RUN apk add --no-cache openvpn easy-rsa netcat-openbsd zip && \
@@ -40,12 +41,16 @@ RUN apk add --no-cache openvpn easy-rsa netcat-openbsd zip && \
     cd ${OPENVPN_INSTALL_PATH} && \
     cp config/server.conf /etc/openvpn/server.conf
 EXPOSE 1194/udp
+
+COPY scripts/openvpn ${OPENVPN_SCRIPT_DIR}
 ##
 
 # Manager part
 RUN mkdir /manager
 COPY --from=manager_builder /app/app /manager
-EXPOSE 80/tcp
+
+ENV HTTP_ADDRESS "0.0.0.0:80"
+EXPOSE 80
 ##
 
 VOLUME ["/opt/"]

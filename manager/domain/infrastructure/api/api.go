@@ -3,17 +3,23 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 	"vpn-manager/config"
+	vpn_manager "vpn-manager/domain/vpn-manager"
 )
 
 func InitHttp() error {
-	server := echo.New()
-	server.HTTPErrorHandler = NewErrorHandler()
+	api := echo.New()
+	api.HTTPErrorHandler = NewErrorHandler()
 
-	server.GET("/ping", func(c echo.Context) error {
+	api.GET("/ping", func(c echo.Context) error {
 		return c.String(200, "PONG")
 	})
 
-	// todo
+	privateApi := api.Group("/api/:service", authMiddleware)
 
-	return server.Start(config.Envs.HttpAddress)
+	privateApi.POST("/client/:id/new", vpn_manager.CreateClient)
+	privateApi.PUT("/client/:id/renew", vpn_manager.RenewClient)
+	privateApi.DELETE("/client/:id", vpn_manager.DropClient)
+	privateApi.GET("/status", vpn_manager.CheckStatus)
+
+	return api.Start(config.Envs.HttpAddress)
 }

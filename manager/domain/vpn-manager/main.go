@@ -1,19 +1,30 @@
 package vpn_manager
 
-import "github.com/labstack/echo/v4"
+import (
+	apiError "vpn-manager/domain/infrastructure/error"
+	"vpn-manager/domain/openvpn"
+	"vpn-manager/domain/vpn-manager/entity"
+)
 
-func CreateClient(c echo.Context) error {
-	return nil
+type VPNServiceManager interface {
+	CreateClient(id string) (*entity.Client, error)
+	GetClient(id string) (*entity.Client, error)
+	DropClient(id string) error
+	RenewClient(id string) (*entity.Client, error)
+
+	HealthCheck() bool
+	Autofix() error
 }
 
-func DropClient(c echo.Context) error {
-	return nil
+var managers = map[string]VPNServiceManager{
+	"openvpn": &openvpn.Service{},
 }
 
-func RenewClient(c echo.Context) error {
-	return nil
-}
+func getService(name string) (VPNServiceManager, error) {
+	service := managers[name]
+	if service == nil {
+		return nil, apiError.NewNotFoundError("Service "+name+" not found", nil)
+	}
 
-func CheckStatus(c echo.Context) error {
-	return nil
+	return service, nil
 }

@@ -10,6 +10,8 @@ type envConfig struct {
 var Envs *envConfig
 
 func initEnvs() {
-	Envs.HttpAddress = os.Getenv("HTTP_ADDRESS")
-	Envs.OpenvpnScriptDir = os.Getenv("OPENVPN_SCRIPT_DIR")
+	Envs = &envConfig{
+		HttpAddress:      os.Getenv("HTTP_ADDRESS"),
+		OpenvpnScriptDir: os.Getenv("OPENVPN_SCRIPT_DIR"),
+	}
 }

@@ -4,7 +4,7 @@ type AccessDeniedError struct {
 	*BaseError
 }
 
-func NewForbiddenError(message string) *AccessDeniedError {
+func NewAccessDeniedError(message string) *AccessDeniedError {
 	return &AccessDeniedError{
 		BaseError: NewBaseError(
 			403,
