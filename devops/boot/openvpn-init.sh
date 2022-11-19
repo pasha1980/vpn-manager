@@ -1,5 +1,22 @@
 #!/bin/bash
 
+apk add --no-cache openvpn easy-rsa netcat-openbsd zip
+
+IS_INITIAL="0"
+if ! [[ -f ${OPENVPN_PERSIST_DIR}/init.gen ]]; then
+  IS_INITIAL="1"
+  ln -s /usr/share/easy-rsa/easyrsa /usr/bin/easyrsa
+  mkdir -p ${OPENVPN_PERSIST_DIR} ${OPENVPN_PERSIST_DIR}/clients ${OPENVPN_PERSIST_DIR}/removed
+  cd ${OPENVPN_PERSIST_DIR}
+  easyrsa init-pki
+  easyrsa gen-dh
+  cp pki/dh.pem /etc/openvpn
+  cd ${OPENVPN_INSTALL_PATH}
+  cp config/server.conf /etc/openvpn/server.conf
+  touch ${OPENVPN_PERSIST_DIR}/init.gen
+fi
+
+cd /
 ADAPTER="${OPENVPN_NET_ADAPTER:=eth0}"
 
 mkdir -p /dev/net
@@ -21,19 +38,25 @@ iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o $ADAPTER -j MASQUERADE
 
 cd "$OPENVPN_PERSIST_DIR"
-easyrsa build-ca nopass << EOF
+
+if [[ $IS_INITIAL == "1" ]]; then
+
+  easyrsa build-ca nopass << EOF
 
 EOF
-easyrsa gen-req MyReq nopass << EOF2
+  easyrsa gen-req MyReq nopass << EOF2
 
 EOF2
-easyrsa sign-req server MyReq << EOF3
+  easyrsa sign-req server MyReq << EOF3
 yes
 EOF3
-openvpn --genkey secret ta.key << EOF4
+  openvpn --genkey secret ta.key << EOF4
 yes
 EOF4
-easyrsa gen-crl
+  easyrsa gen-crl
 
-cp pki/ca.crt pki/issued/MyReq.crt pki/private/MyReq.key pki/crl.pem ta.key /etc/openvpn
+  cp pki/ca.crt pki/issued/MyReq.crt pki/private/MyReq.key pki/crl.pem ta.key /etc/openvpn
+fi
+
+
 openvpn --config /etc/openvpn/server.conf &

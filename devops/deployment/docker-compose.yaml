@@ -12,7 +12,10 @@ services:
       HOST_ADDR: 'ChangeMe'
       HOST_URL: 'ChangeMe'
     volumes:
-      - vpn-data:/opt/openvpn_data
+      - openvpn-data:/opt/openvpn_data
+      - openvpn-config:/etc/openvpn
 volumes:
   openvpn-data:
+    external: false
+  openvpn-config:
     external: false

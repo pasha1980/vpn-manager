@@ -43,16 +43,6 @@ ENV OPENVPN_PERSIST_DIR /opt/${OPENVPN_APP_NAME}_data
 ENV OPENVPN_SCRIPT_DIR /manager/${OPENVPN_APP_NAME}
 
 COPY devops/config/openvpn ${OPENVPN_INSTALL_PATH}/config
-RUN apk add --no-cache openvpn easy-rsa netcat-openbsd zip && \
-    ln -s /usr/share/easy-rsa/easyrsa /usr/bin/easyrsa && \
-    mkdir -p ${OPENVPN_PERSIST_DIR} ${OPENVPN_PERSIST_DIR}/clients ${OPENVPN_PERSIST_DIR}/removed && \
-    cd ${OPENVPN_PERSIST_DIR} && \
-    easyrsa init-pki && \
-    easyrsa gen-dh && \
-    cp pki/dh.pem /etc/openvpn && \
-    cd ${OPENVPN_INSTALL_PATH} && \
-    cp config/server.conf /etc/openvpn/server.conf
-
 EXPOSE 1194/udp
 
 COPY scripts/openvpn ${OPENVPN_SCRIPT_DIR}
