@@ -39,15 +39,15 @@ func main() {
 func upHook() {
 	data := map[string]interface{}{
 		"action":            "up",
-		"url":               os.Getenv("HOST_URL"),
+		"url":               config.Envs.HostAddress,
 		"availableServices": vpn_manager.GetAvailableServices(),
 		"secret":            auth.GenerateApiToken(),
-		"version":           version(),
+		"version":           config.Envs.Version,
 	}
 	jsonData, _ := json.Marshal(data)
 
 	response, err := http.Post(
-		os.Getenv("OPERATOR_URL"),
+		config.Envs.OperatorUrl,
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
@@ -61,22 +61,13 @@ func upHook() {
 func downHook() {
 	data := map[string]string{
 		"action": "down",
-		"url":    os.Getenv("HOST_URL"),
+		"url":    config.Envs.HostAddress,
 	}
 	jsonData, _ := json.Marshal(data)
 
 	http.Post(
-		os.Getenv("OPERATOR_URL"),
+		config.Envs.OperatorUrl,
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
-}
-
-func version() string {
-	v, err := os.ReadFile("/VERSION")
-	if err != nil {
-		return "0.1"
-	}
-
-	return string(v)
 }
