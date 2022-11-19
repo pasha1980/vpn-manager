@@ -12,7 +12,7 @@ type BaseError struct {
 }
 
 func (e *BaseError) Error() string {
-	return e.Message
+	return "Internal"
 }
 
 func (e *BaseError) GetErrorData() *BaseError {

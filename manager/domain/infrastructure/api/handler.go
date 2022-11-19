@@ -14,8 +14,7 @@ func NewErrorHandler() func(err error, ctx echo.Context) {
 		var message string
 		var data interface{}
 
-		switch err.(type) {
-		case *apiError.BaseError:
+		if err.Error() == "Internal" {
 			baseError := err.(apiError.BaseErrorInterface)
 			errorData := baseError.GetErrorData()
 
@@ -23,16 +22,18 @@ func NewErrorHandler() func(err error, ctx echo.Context) {
 			errorType = errorData.ErrorType
 			message = errorData.Message
 			data = errorData.Data
-
-		case *echo.HTTPError:
-			httpError := err.(*echo.HTTPError)
-			statusCode = httpError.Code
-			errorType = "UNDEFINED_ERROR"
-			message = fmt.Sprintf("%s", httpError.Message)
-		default:
-			statusCode = http.StatusInternalServerError
-			errorType = "INTERNAL_ERROR"
-			message = err.Error()
+		} else {
+			switch err.(type) {
+			case *echo.HTTPError:
+				httpError := err.(*echo.HTTPError)
+				statusCode = httpError.Code
+				errorType = "UNDEFINED_ERROR"
+				message = fmt.Sprintf("%s", httpError.Message)
+			default:
+				statusCode = http.StatusInternalServerError
+				errorType = "INTERNAL_ERROR"
+				message = err.Error()
+			}
 		}
 
 		response := map[string]interface{}{
