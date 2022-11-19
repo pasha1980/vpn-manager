@@ -12,7 +12,7 @@ services:
       HOST_ADDR: 'ChangeMe'
       HOST_URL: 'ChangeMe'
     volumes:
-      - vpn-data:/opt
+      - vpn-data:/opt/openvpn_data
 volumes:
-  vpn-data:
+  openvpn-data:
     external: false
