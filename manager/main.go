@@ -42,6 +42,7 @@ func upHook() {
 		"url":               os.Getenv("HOST_URL"),
 		"availableServices": vpn_manager.GetAvailableServices(),
 		"secret":            auth.GenerateApiToken(),
+		"version":           version(),
 	}
 	jsonData, _ := json.Marshal(data)
 
@@ -69,4 +70,13 @@ func downHook() {
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
+}
+
+func version() string {
+	v, err := os.ReadFile("/VERSION")
+	if err != nil {
+		return "0.1"
+	}
+
+	return string(v)
 }

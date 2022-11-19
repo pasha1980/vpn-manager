@@ -18,7 +18,7 @@ RUN go build -o ./app main.go \
 
 # VPN
 FROM alpine:3.14.1 as main
-
+COPY VERSION /VERSION
 ARG HOST_URL="localhost:8080"
 
 RUN apk add --no-cache sudo bash dumb-init curl
