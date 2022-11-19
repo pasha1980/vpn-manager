@@ -7,7 +7,7 @@ easyrsa build-client-full "$CLIENT_ID" nopass &> /dev/null
 mkdir -p $CLIENT_PATH
 cp "pki/private/$CLIENT_ID.key" "pki/issued/$CLIENT_ID.crt" pki/ca.crt /etc/openvpn/ta.key $CLIENT_PATH
 cd "$OPENVPN_INSTALL_PATH"
-cp config/client.ovpn $CLIENT_PATH
+cp config/client.ovpn $CLIENT_PATH/
 
 echo -e "\nremote $HOST_ADDR $HOST_TUN_PORT" >> "$CLIENT_PATH/client.ovpn"
 

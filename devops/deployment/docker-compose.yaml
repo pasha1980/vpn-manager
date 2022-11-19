@@ -1,0 +1,18 @@
+version: '3'
+services:
+  app:
+    image: registry.gitlab.com/khvalygin/tgvpn/dev:latest
+    container_name: 'vpn-dev'
+    ports:
+      - '1194:1194/udp'
+      - '8080:80/tcp'
+    cap_add:
+      - 'NET_ADMIN'
+    environment:
+      HOST_ADDR: 'ChangeMe'
+      HOST_URL: 'ChangeMe'
+    volumes:
+      - vpn-data:/opt
+volumes:
+  vpn-data:
+    external: false

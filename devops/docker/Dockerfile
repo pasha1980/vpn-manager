@@ -59,8 +59,6 @@ COPY scripts/openvpn ${OPENVPN_SCRIPT_DIR}
 RUN chmod +x ${OPENVPN_SCRIPT_DIR}/*
 ##
 
-VOLUME ["/opt/"]
-
 COPY devops/boot /boot
 RUN chmod +x /boot/*
 ENTRYPOINT ["dumb-init", "/boot/start.sh"]
