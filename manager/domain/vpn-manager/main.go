@@ -20,11 +20,23 @@ var managers = map[string]VPNServiceManager{
 	"openvpn": &openvpn.Service{},
 }
 
-func getService(name string) (VPNServiceManager, error) {
+func getManagerByName(name string) (VPNServiceManager, error) {
 	service := managers[name]
 	if service == nil {
 		return nil, apiError.NewNotFoundError("Service "+name+" not found", nil)
 	}
 
 	return service, nil
+}
+
+func GetAvailableServices() []string {
+	var services []string
+
+	for name, manager := range managers {
+		if manager.HealthCheck() {
+			services = append(services, name)
+		}
+	}
+
+	return services
 }

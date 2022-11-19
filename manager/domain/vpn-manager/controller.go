@@ -7,7 +7,7 @@ import (
 
 func CreateClient(c echo.Context) error {
 	serviceParameter := c.Param("service")
-	service, err := getService(serviceParameter)
+	service, err := getManagerByName(serviceParameter)
 	if err != nil {
 		return err
 	}
@@ -29,7 +29,7 @@ func CreateClient(c echo.Context) error {
 
 func DropClient(c echo.Context) error {
 	serviceParameter := c.Param("service")
-	service, err := getService(serviceParameter)
+	service, err := getManagerByName(serviceParameter)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func DropClient(c echo.Context) error {
 
 func RenewClient(c echo.Context) error {
 	serviceParameter := c.Param("service")
-	service, err := getService(serviceParameter)
+	service, err := getManagerByName(serviceParameter)
 	if err != nil {
 		return err
 	}

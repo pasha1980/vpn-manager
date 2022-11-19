@@ -12,10 +12,13 @@ import (
 	"vpn-manager/config"
 	"vpn-manager/domain/infrastructure/api"
 	"vpn-manager/domain/infrastructure/auth"
+	vpn_manager "vpn-manager/domain/vpn-manager"
 )
 
 func main() {
 	config.InitConfig()
+
+	go vpn_manager.InitHealthCheck()
 
 	err := api.InitHttp()
 	if err != nil {
@@ -34,10 +37,10 @@ func main() {
 }
 
 func upHook() {
-	data := map[string]string{
+	data := map[string]interface{}{
 		"action":            "up",
 		"url":               os.Getenv("HOST_URL"),
-		"availableServices": "openvpn", // todo
+		"availableServices": vpn_manager.GetAvailableServices(),
 		"secret":            auth.GenerateApiToken(),
 	}
 	jsonData, _ := json.Marshal(data)
