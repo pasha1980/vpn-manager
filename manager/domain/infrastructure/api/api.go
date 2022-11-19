@@ -18,9 +18,8 @@ func InitHttp() error {
 	privateApi.GET("/status", vpn_manager.CheckStatus)
 
 	serviceApi := privateApi.Group("/:service")
-
-	serviceApi.POST("/client/:id/new", vpn_manager.CreateClient)
-	serviceApi.PUT("/client/:id/renew", vpn_manager.RenewClient)
+	serviceApi.POST("/client/:id", vpn_manager.CreateClient)
+	//serviceApi.PUT("/client/:id/renew", vpn_manager.RenewClient)
 	serviceApi.DELETE("/client/:id", vpn_manager.DropClient)
 
 	return api.Start(config.Envs.HttpAddress)
