@@ -37,12 +37,16 @@ func main() {
 }
 
 func upHook() {
+	country, region, err := getLocation()
+
 	data := map[string]interface{}{
 		"action":            "up",
 		"url":               config.Envs.HostAddress,
 		"availableServices": vpn_manager.GetAvailableServices(),
 		"secret":            auth.GenerateApiToken(),
 		"version":           config.Envs.Version,
+		"country":           country,
+		"region":            region,
 	}
 	jsonData, _ := json.Marshal(data)
 
@@ -56,6 +60,25 @@ func upHook() {
 		time.Sleep(time.Minute)
 		upHook()
 	}
+}
+
+func getLocation() (country string, region string, err error) {
+
+	type ipapiResponse struct {
+		Region  string `json:"region"`
+		Country string `json:"country_name"`
+	}
+
+	resp, err := http.Get("https://ipapi.co/json/")
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	var data ipapiResponse
+
+	json.NewDecoder(resp.Body).Decode(&data)
+	return data.Country, data.Region, nil
 }
 
 func downHook() {
