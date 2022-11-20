@@ -2,6 +2,7 @@ package vpn_manager
 
 import (
 	"github.com/labstack/echo/v4"
+	"vpn-manager/config"
 	"vpn-manager/domain/vpn-manager/dto"
 )
 
@@ -74,6 +75,8 @@ func CheckStatus(c echo.Context) error {
 	for name, manager := range managers {
 		statusDTO.Service[name] = manager.HealthCheck()
 	}
+
+	statusDTO.Version = config.Envs.Version
 
 	return c.JSON(200, statusDTO)
 }
