@@ -10,5 +10,4 @@ echo
 
 echo "Starting control manager..."
 cd /manager
-./app &
-tail -f /dev/null
+./app

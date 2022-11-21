@@ -3,7 +3,9 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"github.com/labstack/gommon/log"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -70,19 +72,21 @@ func upHook() {
 func getLocation() (country string, region string, city string, err error) {
 
 	type ipapiResponse struct {
-		City    string `json:"city"`
-		Region  string `json:"region"`
-		Country string `json:"country_name"`
+		XMLName xml.Name `xml:"root"`
+		City    string   `xml:"city"`
+		Region  string   `xml:"region"`
+		Country string   `xml:"country_name"`
 	}
 
-	resp, err := http.Get("https://ipapi.co/json/")
+	resp, err := http.Get("https://ipapi.co/xml")
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
 
+	xmlBytes, err := ioutil.ReadAll(resp.Body)
 	var data ipapiResponse
-	json.NewDecoder(resp.Body).Decode(&data)
+	xml.Unmarshal(xmlBytes, &data)
 	return data.Country, data.Region, data.City, nil
 }
 
