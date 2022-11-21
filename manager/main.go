@@ -20,12 +20,12 @@ func main() {
 
 	go vpn_manager.InitHealthCheck()
 
+	go upHook()
+
 	err := api.InitHttp()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	go upHook()
 
 	downSignal := make(chan os.Signal)
 	signal.Notify(
@@ -37,7 +37,10 @@ func main() {
 }
 
 func upHook() {
-	country, region, err := getLocation()
+	country, region, city, err := getLocation()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	data := map[string]interface{}{
 		"action":            "up",
@@ -47,6 +50,7 @@ func upHook() {
 		"version":           config.Envs.Version,
 		"country":           country,
 		"region":            region,
+		"city":              city,
 	}
 	jsonData, _ := json.Marshal(data)
 
@@ -55,6 +59,7 @@ func upHook() {
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
+	defer response.Body.Close()
 
 	if err != nil || response.StatusCode != 200 {
 		time.Sleep(time.Minute)
@@ -62,9 +67,10 @@ func upHook() {
 	}
 }
 
-func getLocation() (country string, region string, err error) {
+func getLocation() (country string, region string, city string, err error) {
 
 	type ipapiResponse struct {
+		City    string `json:"city"`
 		Region  string `json:"region"`
 		Country string `json:"country_name"`
 	}
@@ -76,9 +82,8 @@ func getLocation() (country string, region string, err error) {
 	defer resp.Body.Close()
 
 	var data ipapiResponse
-
 	json.NewDecoder(resp.Body).Decode(&data)
-	return data.Country, data.Region, nil
+	return data.Country, data.Region, data.City, nil
 }
 
 func downHook() {
