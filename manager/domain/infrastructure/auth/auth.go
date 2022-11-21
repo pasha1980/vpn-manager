@@ -6,7 +6,7 @@ import (
 	"vpn-manager/services/utils"
 )
 
-var apiTokenLength = 20
+var apiTokenLength = 100
 
 func GenerateApiToken() string {
 	secret, isExist := config.Cache.Get("secret")
