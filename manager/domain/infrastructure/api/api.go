@@ -22,5 +22,5 @@ func InitHttp() error {
 	//serviceApi.PUT("/client/:id/renew", vpn_manager.RenewClient)
 	serviceApi.DELETE("/client/:id", vpn_manager.DropClient)
 
-	return api.Start(config.Envs.HttpAddress)
+	return api.Start(config.Env.HttpAddress)
 }

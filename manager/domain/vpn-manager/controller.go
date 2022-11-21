@@ -76,7 +76,7 @@ func CheckStatus(c echo.Context) error {
 		statusDTO.Service[name] = manager.HealthCheck()
 	}
 
-	statusDTO.Version = config.Envs.Version
+	statusDTO.Version = config.Env.Version
 
 	return c.JSON(200, statusDTO)
 }

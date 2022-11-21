@@ -42,7 +42,7 @@ func (s *Service) CreateClient(id string) (*entity.Client, error) {
 }
 
 func (s *Service) GetClient(id string) (*entity.Client, error) {
-	dirData, err := os.ReadDir(config.Envs.OpenvpnDataDir + "/clients")
+	dirData, err := os.ReadDir(config.Env.OpenvpnDataDir + "/clients")
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (s *Service) GetClient(id string) (*entity.Client, error) {
 		if element.Name() == id {
 			client := entity.Client{
 				ID:             id,
-				ConfigPath:     config.Envs.OpenvpnDataDir + "/clients/" + element.Name() + "/client.ovpn",
+				ConfigPath:     config.Env.OpenvpnDataDir + "/clients/" + element.Name() + "/client.ovpn",
 				ConfigFileName: element.Name(),
 				IsActive:       true,
 			}
@@ -63,7 +63,7 @@ func (s *Service) GetClient(id string) (*entity.Client, error) {
 		}
 	}
 
-	dirData, err = os.ReadDir(config.Envs.OpenvpnDataDir + "/removed")
+	dirData, err = os.ReadDir(config.Env.OpenvpnDataDir + "/removed")
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (s *Service) GetClient(id string) (*entity.Client, error) {
 		if element.Name() == id+".ovpn" {
 			client := entity.Client{
 				ID:             id,
-				ConfigPath:     config.Envs.OpenvpnDataDir + "/removed/" + element.Name() + "/client.ovpn",
+				ConfigPath:     config.Env.OpenvpnDataDir + "/removed/" + element.Name() + "/client.ovpn",
 				ConfigFileName: element.Name(),
 				IsActive:       false,
 			}
@@ -157,7 +157,7 @@ func (s *Service) Autofix() error {
 }
 
 func (s *Service) executeScript(script string, parameters ...string) (string, error) {
-	scriptFile := config.Envs.OpenvpnScriptDir + "/" + script + ".sh"
+	scriptFile := config.Env.OpenvpnScriptDir + "/" + script + ".sh"
 	cmd := exec.Command(scriptFile, strings.Join(parameters, " "))
 	output, err := cmd.Output()
 	if err != nil {

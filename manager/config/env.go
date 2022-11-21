@@ -1,6 +1,8 @@
 package config
 
-import "os"
+import (
+	"os"
+)
 
 type envConfig struct {
 	HttpAddress string
@@ -12,7 +14,7 @@ type envConfig struct {
 	OpenvpnDataDir   string
 }
 
-var Envs *envConfig
+var Env *envConfig
 
 func initEnvs() {
 	var version string
@@ -23,9 +25,9 @@ func initEnvs() {
 
 	version = string(v)
 
-	Envs = &envConfig{
+	Env = &envConfig{
 		HttpAddress: os.Getenv("HTTP_ADDRESS"),
-		HostAddress: os.Getenv("HOST_URL"),
+		HostAddress: os.Getenv("HOST_URL"), // todo: if ends on "/"
 		OperatorUrl: os.Getenv("OPERATOR_URL"),
 		Version:     version,
 

@@ -44,10 +44,10 @@ func upHook() {
 
 	data := map[string]interface{}{
 		"action":            "up",
-		"url":               config.Envs.HostAddress,
+		"url":               config.Env.HostAddress,
 		"availableServices": vpn_manager.GetAvailableServices(),
 		"secret":            auth.GenerateApiToken(),
-		"version":           config.Envs.Version,
+		"version":           config.Env.Version,
 		"country":           country,
 		"region":            region,
 		"city":              city,
@@ -55,7 +55,7 @@ func upHook() {
 	jsonData, _ := json.Marshal(data)
 
 	response, err := http.Post(
-		config.Envs.OperatorUrl,
+		config.Env.OperatorUrl,
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
@@ -89,12 +89,12 @@ func getLocation() (country string, region string, city string, err error) {
 func downHook() {
 	data := map[string]string{
 		"action": "down",
-		"url":    config.Envs.HostAddress,
+		"url":    config.Env.HostAddress,
 	}
 	jsonData, _ := json.Marshal(data)
 
 	http.Post(
-		config.Envs.OperatorUrl,
+		config.Env.OperatorUrl,
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
