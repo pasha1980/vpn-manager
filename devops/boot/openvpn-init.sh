@@ -1,11 +1,11 @@
 #!/bin/bash
 
 apk add --no-cache openvpn easy-rsa netcat-openbsd zip
+ln -s /usr/share/easy-rsa/easyrsa /usr/bin/easyrsa
 
 IS_INITIAL="0"
 if ! [[ -f ${OPENVPN_PERSIST_DIR}/init.gen ]]; then
   IS_INITIAL="1"
-  ln -s /usr/share/easy-rsa/easyrsa /usr/bin/easyrsa
   mkdir -p ${OPENVPN_PERSIST_DIR} ${OPENVPN_PERSIST_DIR}/clients ${OPENVPN_PERSIST_DIR}/removed
   cd ${OPENVPN_PERSIST_DIR}
   easyrsa init-pki
