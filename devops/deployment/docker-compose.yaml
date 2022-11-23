@@ -9,8 +9,7 @@ services:
     cap_add:
       - 'NET_ADMIN'
     environment:
-      HOST_ADDR: 'ChangeMe'
-      HOST_URL: 'ChangeMe'
+      HOST_ADDR: '' # optional
     volumes:
       - openvpn-data:/opt/openvpn_data
       - openvpn-config:/etc/openvpn
