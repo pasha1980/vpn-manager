@@ -3,9 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"encoding/xml"
 	"github.com/labstack/gommon/log"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -39,20 +37,12 @@ func main() {
 }
 
 func upHook() {
-	country, region, city, err := getLocation()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	data := map[string]interface{}{
 		"action":            "up",
 		"url":               config.Env.HostAddress,
 		"availableServices": vpn_manager.GetAvailableServices(),
 		"secret":            auth.GenerateApiToken(),
 		"version":           config.Env.Version,
-		"country":           country,
-		"region":            region,
-		"city":              city,
 	}
 	jsonData, _ := json.Marshal(data)
 
@@ -67,27 +57,6 @@ func upHook() {
 		time.Sleep(time.Minute)
 		upHook()
 	}
-}
-
-func getLocation() (country string, region string, city string, err error) {
-
-	type ipapiResponse struct {
-		XMLName xml.Name `xml:"root"`
-		City    string   `xml:"city"`
-		Region  string   `xml:"region"`
-		Country string   `xml:"country_name"`
-	}
-
-	resp, err := http.Get("https://ipapi.co/xml")
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-
-	xmlBytes, err := ioutil.ReadAll(resp.Body)
-	var data ipapiResponse
-	xml.Unmarshal(xmlBytes, &data)
-	return data.Country, data.Region, data.City, nil
 }
 
 func downHook() {
